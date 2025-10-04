@@ -5,6 +5,8 @@ namespace Idoneo\HumanoChat;
 use Idoneo\HumanoChat\Models\SystemModule;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -59,6 +61,27 @@ class HumanoChatServiceProvider extends PackageServiceProvider
 			}
 		} catch (\Throwable $e) {
 			// no-op
+		}
+
+		// Ensure permissions exist for menus and access
+		try {
+			if (Schema::hasTable('permissions') && class_exists(Permission::class)) {
+				// Run the permissions seeder
+				if (class_exists(\HumanoChat\Database\Seeders\ChatPermissionsSeeder::class)) {
+					(new \HumanoChat\Database\Seeders\ChatPermissionsSeeder())->run();
+				}
+
+				// Grant all chat permissions to admin role
+				$adminRole = class_exists(Role::class) ? Role::where('name', 'admin')->first() : null;
+				if ($adminRole) {
+					$chatPermissions = Permission::where('name', 'LIKE', 'chat.%')->pluck('name')->toArray();
+					if (!empty($chatPermissions)) {
+						$adminRole->givePermissionTo($chatPermissions);
+					}
+				}
+			}
+		} catch (\Throwable $e) {
+			Log::debug('HumanoChat: permissions setup skipped: ' . $e->getMessage());
 		}
 	}
 }
