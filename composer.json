@@ -1,0 +1,27 @@
+{
+	"name": "idoneo/humano-chat",
+	"description": "Team chat with contact linking, threading and assignments",
+	"license": "AGPL-3.0",
+	"type": "library",
+	"require": {
+		"php": "^8.1",
+		"illuminate/support": "^10.0 || ^11.0 || ^12.0",
+		"spatie/laravel-package-tools": "^1.16"
+	},
+	"autoload": {
+		"psr-4": {
+			"Idoneo\\HumanoChat\\": "src/"
+		}
+	},
+	"extra": {
+		"laravel": {
+			"providers": [
+				"Idoneo\\HumanoChat\\HumanoChatServiceProvider"
+			]
+		}
+	},
+	"minimum-stability": "dev",
+	"prefer-stable": true
+}
+
+
