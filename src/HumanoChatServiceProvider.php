@@ -31,9 +31,11 @@ class HumanoChatServiceProvider extends PackageServiceProvider
 						['key' => 'chat'],
 						[
 							'name' => 'Chat',
-							'icon' => 'ti ti-messages',
-							'description' => 'Team chat with contact linking, threading and assignments',
+							'icon' => 'ti ti-message-dots',
+							'description' => 'Live chat module',
 							'is_core' => false,
+							'group' => 'support',
+							'order' => 3,
 							'status' => 1,
 						]
 					);
@@ -42,8 +44,8 @@ class HumanoChatServiceProvider extends PackageServiceProvider
 						['key' => 'chat'],
 						[
 							'name' => 'Chat',
-							'icon' => 'ti ti-messages',
-							'description' => 'Team chat with contact linking, threading and assignments',
+							'icon' => 'ti ti-message-dots',
+							'description' => 'Live chat module',
 							'is_core' => false,
 							'status' => 1,
 						]
