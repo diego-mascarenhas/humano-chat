@@ -68,17 +68,22 @@ class HumanoChatServiceProvider extends PackageServiceProvider
 		// Ensure permissions exist for menus and access
 		try {
 			if (Schema::hasTable('permissions') && class_exists(Permission::class)) {
-				// Run the permissions seeder
-				if (class_exists(\HumanoChat\Database\Seeders\ChatPermissionsSeeder::class)) {
-					(new \HumanoChat\Database\Seeders\ChatPermissionsSeeder())->run();
+				// Create permissions directly instead of using seeder
+				$chatPermissions = [
+					'chat.index', 'chat.list', 'chat.create', 'chat.show',
+					'chat.edit', 'chat.store', 'chat.update', 'chat.destroy'
+				];
+
+				foreach ($chatPermissions as $permission) {
+					Permission::firstOrCreate(['name' => $permission]);
 				}
 
 				// Grant all chat permissions to admin role
 				$adminRole = class_exists(Role::class) ? Role::where('name', 'admin')->first() : null;
 				if ($adminRole) {
-					$chatPermissions = Permission::where('name', 'LIKE', 'chat.%')->pluck('name')->toArray();
-					if (!empty($chatPermissions)) {
-						$adminRole->givePermissionTo($chatPermissions);
+					$createdPermissions = Permission::whereIn('name', $chatPermissions)->get();
+					if ($createdPermissions->isNotEmpty()) {
+						$adminRole->givePermissionTo($createdPermissions);
 					}
 				}
 			}
